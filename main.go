@@ -99,7 +99,7 @@ func outputGitlabProjectsToCsv(filename string, projects []*gitlab.Project) {
 	// Create CSV file
 	file, err := os.Create(filename)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	defer file.Close()
 
