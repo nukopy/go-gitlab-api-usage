@@ -7,6 +7,7 @@ import (
 	"os"
 	"sort"
 	"strings"
+	"time"
 
 	"github.com/xanzy/go-gitlab"
 )
@@ -29,6 +30,7 @@ func outputAllGitLabProjectsInfoToCsv(gitlabToken string, gitlabGroupId string) 
 	}
 
 	// 大元のグループの取得
+	log.Printf("Getting the group info of \"%s\"...\n", gitlabGroupId)
 	group, _, err := git.Groups.GetGroup(gitlabGroupId, &gitlab.GetGroupOptions{})
 	if err != nil {
 		log.Fatal(err)
@@ -37,7 +39,7 @@ func outputAllGitLabProjectsInfoToCsv(gitlabToken string, gitlabGroupId string) 
 	log.Printf("Group Name : %s\n", group.Name)
 
 	// 全てのグループ、サブグループの取得
-	log.Printf("Getting all groups or subgroups \"%s\"...\n", group.Name)
+	log.Printf("Getting all subgroups info in \"%s\"...\n", group.Name)
 
 	var allGroups []*gitlab.Group
 	for {
@@ -91,7 +93,10 @@ func outputAllGitLabProjectsInfoToCsv(gitlabToken string, gitlabGroupId string) 
 	})
 
 	// GitLab のプロジェクト情報を CSV へ出力
-	filename := fmt.Sprintf("output/gitlab_projects_%s.csv", gitlabGroupId)
+	log.Printf("Writing GitLab projects to CSV file...\n")
+
+	now := time.Now()
+	filename := fmt.Sprintf("output/gitlab_projects_%s_%s.csv", gitlabGroupId, TimeToString(now, layoutForFilename))
 	outputGitlabProjectsToCsv(filename, allProjects)
 }
 
@@ -122,9 +127,12 @@ func outputGitlabProjectsToCsv(filename string, projects []*gitlab.Project) {
 			project.Namespace.FullPath, // グループ名、サブグループ名
 			fmt.Sprintf("%d", len(strings.Split(project.Namespace.FullPath, "/"))), // グループ、サブグループの階層の深さ
 			project.PathWithNamespace,             // プロジェクト名（リポジトリ名）
-			TimeToJSTString(*project.LastActivityAt), // 最終更新日時
-			TimeToJSTString(*project.CreatedAt),      // 作成日時
+			TimeToJSTString(*project.LastActivityAt, layoutDefault), // 最終更新日時
+			TimeToJSTString(*project.CreatedAt, layoutDefault),      // 作成日時
 			project.WebURL,                        // プロジェクト URL
 		})
 	}
+
+	log.Println("Complete writing GitLab projects to CSV file 🎉")
+	log.Println("Filename:", filename)
 }
