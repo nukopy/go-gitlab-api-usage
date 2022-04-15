@@ -117,7 +117,7 @@ func outputGitlabProjectsToCsv(filename string, projects []*gitlab.Project) {
 	// write header
 	cw.Write([]string{
 		"Project Name (Repository Name)",
-		"Group Name",
+		"Group / Subgroup Name",
 		"Group Depth",
 		"Last Activity At (JST)",
 		"Created At (JST)",
@@ -126,9 +126,9 @@ func outputGitlabProjectsToCsv(filename string, projects []*gitlab.Project) {
 	// write data
 	for _, project := range projects {
 		cw.Write([]string{
-			project.Namespace.FullPath, // グループ名、サブグループ名
-			fmt.Sprintf("%d", len(strings.Split(project.Namespace.FullPath, "/"))), // グループ、サブグループの階層の深さ
 			project.PathWithNamespace,             // プロジェクト名（リポジトリ名）
+			fmt.Sprintf("%d", len(strings.Split(project.Namespace.FullPath, "/"))), // グループ、サブグループの階層の深さ
+			project.Namespace.FullPath, // グループ名、サブグループ名
 			TimeToJSTString(*project.LastActivityAt, layoutDefault), // 最終更新日時
 			TimeToJSTString(*project.CreatedAt, layoutDefault),      // 作成日時
 			project.WebURL,                        // プロジェクト URL
