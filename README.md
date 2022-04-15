@@ -10,7 +10,7 @@ Go で GitLab API を叩く。サンプルとして、特定のグループの�
 
 ## 実行方法
 
-1. [GitLab のプロフィールページにて Personal Access Token を発行](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html#create-a-personal-access-token)
+1. GitLab のプロフィールページにて Personal Access Token を発行
 2. `.env` の作成
 3. 実行
 
