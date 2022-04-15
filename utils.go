@@ -2,13 +2,6 @@ package main
 
 import "time"
 
-func Max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}
-
 var layoutDefault = "2006-01-02 15:04:05"
 var layoutForFilename = "20060102-150405"
 
