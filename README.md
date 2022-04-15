@@ -29,7 +29,7 @@ GITLAB_TOKEN="*****"
 GITLAB_GROUP_ID="*****"
 ```
 
-### 2. 実行
+### 3. 実行
 
 ```sh
 cd go-gitlab-api-usage/
