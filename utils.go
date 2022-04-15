@@ -10,12 +10,12 @@ func toJST(t time.Time) time.Time {
 	return tJST
 }
 
-func TimeToString(t time.Time, layout string) string {
+func timeToString(t time.Time, layout string) string {
 	str := t.Format(layout)
 	return str
 }
 
-func TimeToJSTString(t time.Time, layout string) string {
+func timeToJSTString(t time.Time, layout string) string {
 	tJST := toJST(t)
 	str := tJST.Format(layout)
 	return str
