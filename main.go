@@ -31,21 +31,21 @@ func outputAllGitLabProjectsInfoToCsv(gitlabToken string, gitlabGroupId string) 
 
 	// 大元のグループの取得
 	log.Printf("Getting the group info of \"%s\"...\n", gitlabGroupId)
-	group, _, err := git.Groups.GetGroup(gitlabGroupId, &gitlab.GetGroupOptions{})
+	groupOrigin, _, err := git.Groups.GetGroup(gitlabGroupId, &gitlab.GetGroupOptions{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Group ID   : %d\n", group.ID)
-	log.Printf("Group Name : %s\n", group.Name)
+	log.Printf("Group ID   : %d\n", groupOrigin.ID)
+	log.Printf("Group Name : %s\n", groupOrigin.Name)
 
 	// 全てのグループ、サブグループの取得
-	log.Printf("Getting all subgroups info in \"%s\"...\n", group.Name)
+	log.Printf("Getting all subgroups info in \"%s\"...\n", groupOrigin.Name)
 
 	var allGroups []*gitlab.Group
-	for {
+	for page := 1; ; page++ {
 		groups, resp, err := git.Groups.ListDescendantGroups(gitlabGroupId, &gitlab.ListDescendantGroupsOptions{
 			ListOptions: gitlab.ListOptions{
-				Page:    1,
+				Page:    page,
 				PerPage: 100,
 			},
 		})
@@ -61,17 +61,19 @@ func outputAllGitLabProjectsInfoToCsv(gitlabToken string, gitlabGroupId string) 
 		}
 	}
 
-	allGroups = append([]*gitlab.Group{group}, allGroups...) // 大元のグループを先頭に追加
+	allGroups = append([]*gitlab.Group{groupOrigin}, allGroups...) // 大元のグループを先頭に追加
 
 	// 各グループ、各サブグループのプロジェクト情報の取得
-	log.Printf("Getting all projects in every group \"%s\"...\n", group.Name)
+	log.Printf("Getting all projects in every group of \"%s\"...\n", groupOrigin.Name)
 
 	var allProjects []*gitlab.Project
 	for _, group := range allGroups {
-		for {
+		log.Printf("Group / Subgroup Name: \"%s\"\n", group.FullPath)
+
+		for page := 1; ; page++ {
 			projects, resp, err := git.Groups.ListGroupProjects(group.ID, &gitlab.ListGroupProjectsOptions{
 				ListOptions: gitlab.ListOptions{
-					Page:    1,
+					Page:    page,
 					PerPage: 100,
 				},
 			})
