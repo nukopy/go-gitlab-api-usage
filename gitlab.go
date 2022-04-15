@@ -22,13 +22,7 @@ func createGitlabClient(gitlabToken string) (*gitlab.Client, error) {
 }
 
 // 特定のグループの全ての Gitlab プロジェクトを取得// 特定のグループの全ての Gitlab プロジェクトを取得
-func fetchAllGitlabProjectsInGroup(gitlabToken string, gitlabGroupId string) ([]*gitlab.Project, error) {
-	// GitLab API クライアントの作成
-	cli, err := createGitlabClient(gitlabToken)
-	if err != nil {
-		return nil, err
-	}
-
+func fetchAllGitlabProjectsInGroup(cli *gitlab.Client, gitlabGroupId string) ([]*gitlab.Project, error) {
 	// 大元のグループの取得
 	log.Printf("Getting the group info of \"%s\"...\n", gitlabGroupId)
 	groupOrigin, _, err := cli.Groups.GetGroup(gitlabGroupId, &gitlab.GetGroupOptions{})
