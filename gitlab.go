@@ -123,8 +123,8 @@ func outputGitlabProjectsToCsv(gitlabGroupId string, projects []*gitlab.Project)
 	for _, project := range projects {
 		cw.Write([]string{
 			project.PathWithNamespace,             // プロジェクト名（リポジトリ名）
-			fmt.Sprintf("%d", len(strings.Split(project.Namespace.FullPath, "/"))), // グループ、サブグループの階層の深さ
 			project.Namespace.FullPath, // グループ名、サブグループ名
+			fmt.Sprintf("%d", len(strings.Split(project.Namespace.FullPath, "/"))), // グループ、サブグループの階層の深さ
 			timeToJSTString(*project.LastActivityAt, layoutDefault), // 最終更新日時
 			timeToJSTString(*project.CreatedAt, layoutDefault),      // 作成日時
 			project.WebURL,                        // プロジェクト URL
